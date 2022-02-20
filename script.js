@@ -18,7 +18,7 @@ $form.addEventListener('input', handleInput)
 
 function submit  (event)  {
 	event.preventDefault()
-	$form.classList.add('submit-was-pressed')
+	$form.classList.add('showErrors')
 	comparePasswordsAndDisplayErrors()
 	checkPasswordForErrors()
 	checkPhoneNumberForErrors()
@@ -58,7 +58,7 @@ const saveInputValues = event => {
 }
 
 function handleInput  (event)  {
-	$form.classList.remove('submit-was-pressed')
+	$form.classList.remove('showErrors')
 	saveInputValues(event)
 }
 
