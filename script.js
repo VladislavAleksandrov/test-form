@@ -21,7 +21,11 @@ const submit = event => {
 	checkPhoneNumberForErrors()
 	checkLastNameForErrors()
 	checkNameForErrors()
-	if (checkNoErrorExist()) sendForm()
+	if (checkNoErrorExist()) {
+		formatNameAndLastNameValues()
+		sendForm()
+		$form.reset()
+	}
 }
 
 const sendForm = () => {
@@ -108,6 +112,11 @@ const checkNoErrorExist = () => {
 		if (element.textContent) result = false
 	})
 	return result
+}
+
+const formatNameAndLastNameValues = () => {
+	name = name[0].toUpperCase() + name.slice(1).toLowerCase()
+	lastName = lastName[0].toUpperCase() + lastName.slice(1).toLowerCase()
 }
 
 $form.addEventListener('submit', submit)
