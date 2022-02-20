@@ -1,19 +1,22 @@
-const $form = document.querySelector('#form')
-const $name = document.querySelector('#name')
-const $lastName = document.querySelector('#lastName')
-const $phone = document.querySelector('#phone')
-const $password = document.querySelector('#password')
-const $passwordRepeated = document.querySelector('#passwordRepeat')
+const $form = document.getElementById('form')
+const $name = document.getElementById('name')
+const $lastName = document.getElementById('lastName')
+const $phone = document.getElementById('phone')
+const $password = document.getElementById('password')
+const $passwordRepeated = document.getElementById('passwordRepeat')
 
 let name, lastName, phone, password, passwordRepeated
 const passwordErrors = []
+
+$form.addEventListener('submit', submit)
+$form.addEventListener('input', handleInput)
 
 /////////////////////////////////////////
 //Не стал делать реализацию через паттерны и кастомизацию стандартных сообщений об ошибке
 // например атрибуты pattern="[a-zA-z]{1,15}" и title="Только латиница, от 1 до 15 символов" внутри элемента input
 /////////////////////////////////////////
 
-const submit = event => {
+function submit  (event)  {
 	event.preventDefault()
 	$form.classList.add('submit-was-pressed')
 	comparePasswordsAndDisplayErrors()
@@ -22,13 +25,23 @@ const submit = event => {
 	checkLastNameForErrors()
 	checkNameForErrors()
 	if (checkNoErrorExist()) {
+		console.log('clear zone')
 		formatNameAndLastNameValues()
-		sendForm()
+		logForm()
 		$form.reset()
+		clearValues()
 	}
 }
 
-const sendForm = () => {
+const clearValues = () => {
+  name = ''
+	lastName = ''
+	phone = ''
+	password = ''
+	passwordRepeated = ''
+}
+
+const logForm = () => {
 	console.log(`
 	Имя - ${name}
 	Фамилия - ${lastName}
@@ -37,21 +50,21 @@ const sendForm = () => {
 }
 
 const saveInputValues = event => {
-	if (event.target.closest('#name')) name = event.target.value = event.target.value.replaceAll(/[^a-zA-Z]/g, '')
+	if (event.target === $name) name = event.target.value = event.target.value.replaceAll(/[^a-zA-Z]/g, '')
 	else if (event.target.closest('#lastName')) lastName = event.target.value = event.target.value.replaceAll(/[^a-zA-Z]/g, '')
 	else if (event.target.closest('#phone')) fixPhoneNumberInputValue(event)
 	else if (event.target.closest('#password')) password = event.target.value = event.target.value.replaceAll(/[^a-zA-Z\d]/g, '')
 	else if (event.target.closest('#passwordRepeat')) passwordRepeated = event.target.value = event.target.value.replaceAll(/[^a-zA-Z\d]/g, '')
 }
 
-const handleInput = event => {
+function handleInput  (event)  {
 	$form.classList.remove('submit-was-pressed')
 	saveInputValues(event)
 }
 
 const fixPhoneNumberInputValue = event => {
 	event.target.value !== '7' && event.target.value?.length === 1 && (event.target.value = '7' + event.target.value)
-	phone = event.target.value = event.target.value.replaceAll(/[^\d]/g, '').replace(/\d/, '7').slice(0, 11)
+	phone = event.target.value = event.target.value.replaceAll(/[^\d]/g, '').replace(/\d/, '7')
 }
 
 const checkNameForErrors = () => {
@@ -90,7 +103,7 @@ const checkPasswordForErrors = () => {
 		if (!password.match(/[0-9]/)) passwordErrors.push('Пароль должен содержать хотя бы одну цифру')
 	}
 	passwordErrors.forEach(item => {
-		const errorString = document.createElement('p')
+		const errorString = document.createElement('span')
 		errorString.classList.add('error')
 		errorString.textContent = item
 		closestError.append(errorString)
@@ -108,7 +121,7 @@ const comparePasswordsAndDisplayErrors = () => {
 
 const checkNoErrorExist = () => {
 	let result = true
-	document.querySelectorAll('p.error').forEach(element => {
+	document.querySelectorAll('span.error').forEach(element => {
 		if (element.textContent) result = false
 	})
 	return result
@@ -119,5 +132,3 @@ const formatNameAndLastNameValues = () => {
 	lastName = lastName[0].toUpperCase() + lastName.slice(1).toLowerCase()
 }
 
-$form.addEventListener('submit', submit)
-$form.addEventListener('input', handleInput)
