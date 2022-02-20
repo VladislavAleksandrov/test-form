@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>MA test job</title>
+	<script src="script.js" defer></script>
+	<style>
+
+		input {
+			margin: 5px 0;
+		}
+
+		label {
+			display: block;
+		}
+
+		p {
+			margin: 5px 0;
+		}
+
+		.error {
+			color: red;
+			display: none;
+			margin: 0;
+			min-height: 18px;
+		}
+
+		.submit-was-pressed .error {
+			display: block;
+		}
+
+		.submit-was-pressed .error + br {
+			display: none;
+		}
+
+		button {
+			margin: 5px 0;
+		}
+
+	</style>
+</head>
+<body>
+
+<form id="form" novalidate>
+	<label for="name">Имя*</label>
+	<input type="text" id="name" pattern="[a-zA-z]{1,15}" title="Только латиница, от 1 до 15 символов" required>
+	<br/>
+	<p class="error"></p>
+	<br/>
+	<label for="lastName">Фамилия*</label>
+	<input type="text" id="lastName" pattern="[a-zA-z]{2,}" title="Только латиница, от 2 символов" required>
+	<br/>
+	<p class="error"></p>
+	<br/>
+	<label for="phone">Телефон*</label>
+	<input type="tel" id="phone" pattern="7[\d]{10}" title="Только цифры, 11 символов, начинается с 7" required>
+	<br/>
+	<p class="error"></p>
+	<br/>
+	<label for="password">Пароль*</label>
+	<input type="password" id="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
+	       title="От 6 символов, без латиницы, обязательно хотя бы одну заглавную букву и одну цифру" required>
+	<br/>
+	<div class="error"></div>
+	<br>
+	<label for="passwordRepeat">Повторите пароль*</label>
+	<input type="password" id="passwordRepeat" title="Пароли должны совпадать" required>
+	<br/>
+	<p class="error"></p>
+	<br/>
+	<button type="submit">Отправить</button>
+</form>
+</body>
+</html>
