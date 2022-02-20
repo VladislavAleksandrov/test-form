@@ -53,8 +53,8 @@ const saveInputValues = event => {
 	if (event.target === $name) name = event.target.value = event.target.value.replaceAll(/[^a-zA-Z]/g, '')
 	else if (event.target.closest('#lastName')) lastName = event.target.value = event.target.value.replaceAll(/[^a-zA-Z]/g, '')
 	else if (event.target.closest('#phone')) fixPhoneNumberInputValue(event)
-	else if (event.target.closest('#password')) password = event.target.value = event.target.value.replaceAll(/[^a-zA-Z\d]/g, '')
-	else if (event.target.closest('#passwordRepeat')) passwordRepeated = event.target.value = event.target.value.replaceAll(/[^a-zA-Z\d]/g, '')
+	else if (event.target.closest('#password')) password = event.target.value = event.target.value.replaceAll(/[^а-яА-Я\d]/g, '')
+	else if (event.target.closest('#passwordRepeat')) passwordRepeated = event.target.value = event.target.value.replaceAll(/[^а-яА-Я\d]/g, '')
 }
 
 function handleInput  (event)  {
@@ -98,8 +98,8 @@ const checkPasswordForErrors = () => {
 	if (!password) closestError.textContent = 'Ввод пароля является обязательным (от 6 символов, должен содержать хотя бы одну заглавную цифру и одну цифру)'
 	else {
 		if (password.length < 6) passwordErrors.push('Минимальная длина пароля 6 символов')
-		if (!password.match(/[A-Z]/)) passwordErrors.push('Пароль должен содержать хотя бы одну заглавную букву')
-		if (!password.match(/[a-z]/)) passwordErrors.push('Пароль должен содержать хотя бы одну строчную букву')
+		if (!password.match(/[А-Я]/)) passwordErrors.push('Пароль должен содержать хотя бы одну заглавную букву')
+		if (!password.match(/[а-я]/)) passwordErrors.push('Пароль должен содержать хотя бы одну строчную букву')
 		if (!password.match(/[0-9]/)) passwordErrors.push('Пароль должен содержать хотя бы одну цифру')
 	}
 	passwordErrors.forEach(item => {
