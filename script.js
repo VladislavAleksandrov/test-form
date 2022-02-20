@@ -49,6 +49,11 @@ const logForm = () => {
 	Пароль - ${password}`)
 }
 
+
+///////////////////////////////////////////
+//Пароль по условию не может быть латиницей
+///////////////////////////////////////////
+
 const saveInputValues = event => {
 	if (event.target === $name) name = event.target.value = event.target.value.replaceAll(/[^a-zA-Z]/g, '')
 	else if (event.target.closest('#lastName')) lastName = event.target.value = event.target.value.replaceAll(/[^a-zA-Z]/g, '')
