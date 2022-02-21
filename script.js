@@ -4,20 +4,6 @@ const $errors = [...$form.querySelectorAll(".js-error")];
 $form.addEventListener("input", handleInput, false);
 $form.addEventListener("submit", handleSubmit, false);
 
-const request = {
-	'firstName': '',
-	'secondName': '',
-	'phone': '',
-	'password': '',
-	'passwordRepeat': ''
-}
-
-function saveRequest(request) {
-	for (const name in request) {
-		request[name] = $form.elements[name]?.value
-	}
-}
-
 function handleInput() {
 	$errors.forEach(($error) => ($error.textContent = ""));
 }
@@ -25,17 +11,13 @@ function handleInput() {
 function handleSubmit(event) {
 	event.preventDefault();
 	[...$form.elements].forEach(showErrors);
-	saveRequest(request)
 	if ($form.checkValidity()) {
 		console.log(`
-firstName - ${request.firstName[0].toUpperCase() + request.firstName.slice(1).toLowerCase()}
-secondName - ${request.secondName[0].toUpperCase() + request.secondName.slice(1).toLowerCase()}
-phone - ${request.phone}
-password - ${request.password}
+firstName - ${$form.elements.firstName.value[0].toUpperCase() + $form.elements.firstName.value.slice(1).toLowerCase()}
+secondName - ${$form.elements.secondName.value[0].toUpperCase() + $form.elements.secondName.value.slice(1).toLowerCase()}
+phone - ${$form.elements.phone.value}
+password - ${$form.elements.password.value}
 	`)
-		for (const name in request) {
-			request[name] = ''
-		}
 		$form.reset()
 	}
 }
@@ -56,7 +38,7 @@ function showErrors($input) {
 		} else errors.push($input.getAttribute("data-pattern-error"));
 	}
 	if ($input.name === "passwordRepeat") {
-		if (request.password === request.passwordRepeat) $input.setCustomValidity('')
+		if ($form.elements.password.value === $form.elements.passwordRepeat.value) $input.setCustomValidity('')
 		else {
 			$input.setCustomValidity('Пароли не совпадают')
 			errors.push('Пароли не совпадают')
