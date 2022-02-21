@@ -6,69 +6,100 @@
 	<script src="script.js" defer></script>
 	<style>
 
-		input {
-			margin: 5px 0;
+		form {
+			margin: auto;
 		}
-
 		label {
 			display: block;
 		}
-
-		span {
-			margin: 5px 0;
-		}
-
-		.error {
-			color: red;
-			display: none;
-			margin: 0;
-			min-height: 18px;
-		}
-
-		.showErrors .error {
+		input {
 			display: block;
 		}
-
-		.showErrors .error + br {
-			display: none;
-		}
-
-		button {
-			margin: 5px 0;
+		span {
+			display: block;
+			min-height: 16px;
+			line-height: 16px;
+			margin-bottom: 8px;
+			white-space: pre-line;
+			color: red;
 		}
 
 	</style>
 </head>
 <body>
-<h2>Корректно условие с паролем, который не должен содержать латиницу?</h2>
-<form id="form" novalidate>
-	<label for="name">Имя*</label>
-	<input type="text" id="name" pattern="[a-zA-z]{1,15}" maxlength="15" title="Только латиница, от 1 до 15 символов" required>
-	<br/>
-	<span class="error"></span>
-	<br/>
-	<label for="lastName">Фамилия*</label>
-	<input type="text" id="lastName" pattern="[a-zA-z]{2,}" title="Только латиница, от 2 символов" required>
-	<br/>
-	<span class="error"></span>
-	<br/>
-	<label for="phone">Телефон*</label>
-	<input type="tel" id="phone" maxlength="11" pattern="7[\d]{10}" title="Только цифры, 11 символов, начинается с 7" required>
-	<br/>
-	<span class="error"></span>
-	<br/>
-	<label for="password">Пароль*</label>
-	<input type="password" autocomplete="new-password" id="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
-	       title="От 6 символов, без латиницы, обязательно хотя бы одну заглавную букву и одну цифру" required>
-	<br/>
-	<div class="error"></div>
-	<br>
-	<label for="passwordRepeat">Повторите пароль*</label>
-	<input type="password" autocomplete="new-password" id="passwordRepeat" title="Пароли должны совпадать" required>
-	<br/>
-	<span class="error"></span>
-	<br/>
-	<button type="submit">Отправить</button>
+<h2>Корректно ли условие с паролем, который не должен содержать латиницу?</h2>
+<form class="js-form" novalidate>
+	<label>
+		Имя*
+		<input
+			class="js-input"
+			name="firstName"
+			type="text"
+			pattern="[a-zA-Z]+"
+			maxlength="15"
+			data-pattern-error="Только латиница"
+			required
+		/>
+		<span role="alert" aria-live="polite" class="js-error"></span>
+	</label>
+
+	<label>
+		Фамилия*
+		<input
+			type="text"
+			class="js-input"
+			name="secondName"
+			minlength="2"
+			pattern="[a-zA-Z]+"
+			data-pattern-error="Только латиница"
+			required
+		/>
+		<span role="alert" aria-live="polite" class="js-error"></span>
+	</label>
+
+	<label>
+		Телефон*
+		<input
+			type="tel"
+			class="js-input"
+			name="phone"
+			pattern="7[\d]+"
+			data-pattern-error="Только цифры, начиная с 7"
+			minlength="11"
+			maxlength="11"
+			required
+		/>
+		<span role="alert" aria-live="polite" class="js-error"></span>
+	</label>
+
+	<label>
+		Пароль*
+		<input
+			class="js-input"
+			type="password"
+			name="password"
+			pattern="(?=.*\d)(?=.*[а-я])(?=.*[А-Я]).{6,}"
+			data-pattern-error="Пароль без латиницы должен содержать хотя бы по одну заглавную букву и одну цифру"
+			minlength="6"
+			required
+			autocomplete
+		/>
+		<span role="alert" aria-live="polite" class="js-error"></span>
+	</label>
+
+	<label>
+		Повторение пароля*
+		<input
+			class="js-input"
+			type="password"
+			name="passwordRepeat"
+			minlength="6"
+			autocomplete
+			required
+		/>
+		<span role="alert" aria-live="polite" class="js-error"></span>
+	</label>
+	<button class="js-submit" type="submit">Отправить</button>
 </form>
 </body>
 </html>

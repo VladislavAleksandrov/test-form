@@ -1,139 +1,68 @@
-const $form = document.getElementById('form')
-const $name = document.getElementById('name')
-const $lastName = document.getElementById('lastName')
-const $phone = document.getElementById('phone')
-const $password = document.getElementById('password')
-const $passwordRepeated = document.getElementById('passwordRepeat')
+const $form = document.querySelector(".js-form");
+const $errors = [...$form.querySelectorAll(".js-error")];
 
-let name, lastName, phone, password, passwordRepeated
-const passwordErrors = []
+$form.addEventListener("input", handleInput, false);
+$form.addEventListener("submit", handleSubmit, false);
 
-$form.addEventListener('submit', submit)
-$form.addEventListener('input', handleInput)
+const request = {
+	'firstName': '',
+	'secondName': '',
+	'phone': '',
+	'password': '',
+	'passwordRepeat': ''
+}
 
-/////////////////////////////////////////
-//Не стал делать реализацию через паттерны и кастомизацию стандартных сообщений об ошибке
-// например атрибуты pattern="[a-zA-z]{1,15}" и title="Только латиница, от 1 до 15 символов" внутри элемента input
-/////////////////////////////////////////
+function saveRequest(request) {
+	for (const name in request) {
+		request[name] = $form.elements[name]?.value
+	}
+}
 
-function submit  (event)  {
-	event.preventDefault()
-	$form.classList.add('showErrors')
-	comparePasswordsAndDisplayErrors()
-	checkPasswordForErrors()
-	checkPhoneNumberForErrors()
-	checkLastNameForErrors()
-	checkNameForErrors()
-	if (checkNoErrorExist()) {
-		console.log('clear zone')
-		formatNameAndLastNameValues()
-		logForm()
+function handleInput() {
+	$errors.forEach(($error) => ($error.textContent = ""));
+}
+
+function handleSubmit(event) {
+	event.preventDefault();
+	[...$form.elements].forEach(showErrors);
+	saveRequest(request)
+	if ($form.checkValidity()) {
+		console.log(`
+firstName - ${request.firstName[0].toUpperCase() + request.firstName.slice(1).toLowerCase()}
+secondName - ${request.secondName[0].toUpperCase() + request.secondName.slice(1).toLowerCase()}
+phone - ${request.phone}
+password - ${request.password}
+	`)
+		for (const name in request) {
+			request[name] = ''
+		}
 		$form.reset()
-		clearValues()
 	}
 }
 
-const clearValues = () => {
-  name = ''
-	lastName = ''
-	phone = ''
-	password = ''
-	passwordRepeated = ''
-}
+function showErrors($input) {
+	const {validity} = $input;
 
-const logForm = () => {
-	console.log(`
-	Имя - ${name}
-	Фамилия - ${lastName}
-	Телефон - ${phone}
-	Пароль - ${password}`)
-}
-
-
-///////////////////////////////////////////
-//Пароль по условию не может быть латиницей
-///////////////////////////////////////////
-
-const saveInputValues = event => {
-	if (event.target === $name) name = event.target.value = event.target.value.replaceAll(/[^a-zA-Z]/g, '')
-	else if (event.target.closest('#lastName')) lastName = event.target.value = event.target.value.replaceAll(/[^a-zA-Z]/g, '')
-	else if (event.target.closest('#phone')) fixPhoneNumberInputValue(event)
-	else if (event.target.closest('#password')) password = event.target.value = event.target.value.replaceAll(/[^а-яА-Я\d]/g, '')
-	else if (event.target.closest('#passwordRepeat')) passwordRepeated = event.target.value = event.target.value.replaceAll(/[^а-яА-Я\d]/g, '')
-}
-
-function handleInput  (event)  {
-	$form.classList.remove('showErrors')
-	saveInputValues(event)
-}
-
-const fixPhoneNumberInputValue = event => {
-	event.target.value !== '7' && event.target.value?.length === 1 && (event.target.value = '7' + event.target.value)
-	phone = event.target.value = event.target.value.replaceAll(/[^\d]/g, '').replace(/\d/, '7')
-}
-
-const checkNameForErrors = () => {
-	const closestError = document.querySelector('#name~.error')
-	closestError.textContent = ''
-	if (!name) closestError.textContent = 'Ввод имени является обязательным (только латиница, от 1 до 15 символов)'
-	else name?.length > 15 && (closestError.textContent = 'Имя должно быть не длиннее 15 символов')
-	closestError.textContent && $name.focus()
-}
-
-const checkLastNameForErrors = () => {
-	const closestError = document.querySelector('#lastName~.error')
-	closestError.textContent = ''
-	if (!lastName) closestError.textContent = 'Ввод фамилии является обязательным (только латиница от 2 символов)'
-	else (lastName?.length < 2) && (closestError.textContent = 'Фамилия должна состоять не менее чем из 2 латинских букв')
-	closestError.textContent && $lastName.focus()
-}
-
-const checkPhoneNumberForErrors = () => {
-	const closestError = document.querySelector('#phone~.error')
-	closestError.textContent = ''
-	if (!phone) closestError.textContent = 'Ввод номера телефона является обязательным'
-	else (phone?.length < 11) && (closestError.textContent = 'Номер телефона должен состоять из 11 цифр, начиная с 7')
-	closestError.textContent && $lastName.focus()
-}
-
-const checkPasswordForErrors = () => {
-	const closestError = document.querySelector('#password~.error')
-	closestError.textContent = ''
-	passwordErrors.length = 0
-	if (!password) closestError.textContent = 'Ввод пароля является обязательным (от 6 символов, должен содержать хотя бы одну заглавную цифру и одну цифру)'
-	else {
-		if (password.length < 6) passwordErrors.push('Минимальная длина пароля 6 символов')
-		if (!password.match(/[А-Я]/)) passwordErrors.push('Пароль должен содержать хотя бы одну заглавную букву')
-		if (!password.match(/[а-я]/)) passwordErrors.push('Пароль должен содержать хотя бы одну строчную букву')
-		if (!password.match(/[0-9]/)) passwordErrors.push('Пароль должен содержать хотя бы одну цифру')
+	let errors = [];
+	if (validity.valueMissing) errors.push("Поле не может быть пустым");
+	if (validity.tooShort) errors.push(`Не меньше ${$input.minLength} символов`);
+	if (validity.tooLarge) errors.push(`Не больше ${$input.maxLength} символов`);
+	if (validity.patternMismatch) {
+		if ($input.name === "password") {
+			if ($input.value.match(/[a-zA-Z]/)) errors.push('Латиница недопустима')
+			if (!$input.value.match(/[0-9]/)) errors.push('Хотя бы 1 цифра')
+			if (!$input.value.match(/[а-я]/)) errors.push('Хотя бы 1 заглавная буква')
+			if (!$input.value.match(/[А-Я]/)) errors.push('Хотя бы 1 строчная буква')
+		} else errors.push($input.getAttribute("data-pattern-error"));
 	}
-	passwordErrors.forEach(item => {
-		const errorString = document.createElement('span')
-		errorString.classList.add('error')
-		errorString.textContent = item
-		closestError.append(errorString)
-	})
-	closestError.textContent && $password.focus()
-}
+	if ($input.name === "passwordRepeat") {
+		if (request.password === request.passwordRepeat) $input.setCustomValidity('')
+		else {
+			$input.setCustomValidity('Пароли не совпадают')
+			errors.push('Пароли не совпадают')
+		}
+	}
 
-const comparePasswordsAndDisplayErrors = () => {
-	const closestError = document.querySelector('#passwordRepeat~.error')
-	closestError.textContent = ''
-	if (!passwordRepeated) closestError.textContent = 'Поле необходимо заполнить'
-	else if (password !== passwordRepeated) closestError.textContent = 'Пароли не совпадают'
-	closestError.textContent && $passwordRepeated.focus()
-}
-
-const checkNoErrorExist = () => {
-	let result = true
-	document.querySelectorAll('span.error').forEach(element => {
-		if (element.textContent) result = false
-	})
-	return result
-}
-
-const formatNameAndLastNameValues = () => {
-	name = name[0].toUpperCase() + name.slice(1).toLowerCase()
-	lastName = lastName[0].toUpperCase() + lastName.slice(1).toLowerCase()
+	if (errors.length) $input.nextElementSibling.textContent = errors.join("\n");
 }
 
